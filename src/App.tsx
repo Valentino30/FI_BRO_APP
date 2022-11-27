@@ -1,35 +1,20 @@
-import { Aggregated, Result } from "./type/data";
-import { useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import { GetData } from "./utils/index";
+import { Data } from "./type/data";
 import "./App.css";
 
 function App() {
-  const [data, setData] = useState<Aggregated>();
+  const [data, setData] = useState<Data[] | []>([]);
 
-  const fetchData = async () => {
-    const data = await axios.get(
-      "https://api.polygon.io/v2/aggs/ticker/SP/range/1/day/2021-06-22/2021-07-22?adjusted=true&sort=asc&limit=120&apiKey=Umlk2WnTHnjU0wfJzZJjyZeId4YeW8CQ"
-    );
-
-    const average = (
-      data.data.results
-        .map((result: Result) => result.o)
-        .reduce(
-          (previousOpening: string, currentOpening: string) =>
-            previousOpening + currentOpening
-        ) / data.data.count
-    ).toFixed(2);
-
-    setData({
-      ...data.data,
-      average,
-    });
-  };
+  useEffect(() => {
+    // @ts-ignore
+    GetData().then((data) => setData(data?.data));
+  }, []);
 
   return (
     <div className="App">
-      {data && <p>{data.average} 🤘</p>}
-      <button onClick={fetchData}>Fetch Data</button>
+      {data[0] ? <p>{data[0].year} 🤘</p> : <p>🤌</p>}
+      <button>Fetch Data</button>
     </div>
   );
 }

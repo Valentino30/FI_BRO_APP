@@ -33,3 +33,8 @@ export type Aggregated = {
   count: number;
   average: number;
 };
+
+export type Data = {
+  year: string;
+  SP500: string;
+};
